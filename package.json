@@ -1,0 +1,50 @@
+{
+  "name": "regexp-dummy-generator",
+  "description": "Effortless String Generation from Patterns.",
+  "version": "1.0.1",
+  "keywords": [],
+  "author": "mochiya98 (Yukimasa Funaoka)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mochiya98/regexp-dummy-generator.git"
+  },
+  "homepage": "https://github.com/mochiya98/regexp-dummy-generator",
+  "type": "module",
+  "main": "dist/regexp_dummy_generator.min.cjs.cjs",
+  "module": "dist/regexp_dummy_generator.min.esm.js",
+  "types": "dist/index.d.ts",
+  "browser": "dist/regexp_dummy_generator.min.umd.js",
+  "umd": "./dist/regexp_dummy_generator.min.umd.js",
+  "exports": {
+    ".": {
+      "import": "./dist/regexp_dummy_generator.min.esm.js",
+      "require": "./dist/regexp_dummy_generator.min.cjs.cjs"
+    }
+  },
+  "files": [
+    "dist/*",
+    "!dist/index.html"
+  ],
+  "scripts": {
+    "generate:unicode": "tsx generateUnicodeTable.ts",
+    "build": "rollup --config rollup.config.ts",
+    "test": "npx tsgo tsc && vitest run --coverage",
+    "test:watch": "vitest",
+    "test:verbose": "vitest run --coverage --reporter verbose"
+  },
+  "devDependencies": {
+    "@rollup/plugin-replace": "^6.0.2",
+    "@types/node": "24.0.7",
+    "@typescript/native-preview": "7.0.0-dev.20250628.1",
+    "@unicode/unicode-16.0.0": "1.6.6",
+    "@vitest/coverage-v8": "3.2.4",
+    "rollup": "4.44.1",
+    "rollup-plugin-dts": "6.2.1",
+    "rollup-plugin-esbuild": "6.2.1",
+    "tsx": "4.20.3",
+    "typescript": "5.8.3",
+    "vitest": "3.2.4"
+  },
+  "packageManager": "yarn@4.9.1"
+}

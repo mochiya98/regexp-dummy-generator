@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>regexp-dummy-generator</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%2216%22%20height%3D%2216%22%20rx%3D%223%22%20fill%3D%22%23eee%22%20/%3E%3Ccircle%20cx%3D%225%22%20cy%3D%2211.5%22%20r%3D%222%22%20fill%3D%22%23444%22%20/%3E%3Cg%20stroke%3D%22%23444%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22butt%22%3E%3Cline%20x1%3D%2210.5%22%20y1%3D%222.5%22%20x2%3D%2210.5%22%20y2%3D%229.5%22%20/%3E%3Cline%20x1%3D%227.5%22%20y1%3D%224%22%20x2%3D%2213.5%22%20y2%3D%228%22%20/%3E%3Cline%20x1%3D%227.5%22%20y1%3D%228%22%20x2%3D%2213.5%22%20y2%3D%224%22%20/%3E%3C/g%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit&family=Open+Sans&family=Roboto+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400&family=BIZ+UDGothic&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+    />
+    <style>
+      .container-main {
+        max-width: 700px;
+        margin: 0 auto;
+        font-family: "Outfit", "SF Mono", "Menlo", "Monaco", "Consolas",
+          monospace;
+        line-height: 1.3;
+      }
+      .container-main-title {
+        padding-top: 60px;
+        padding-bottom: 8px;
+        text-align: center;
+        font-size: 40px;
+        font-weight: 700;
+        letter-spacing: 2px;
+      }
+      .container-main-subtitle {
+        padding-bottom: 24px;
+        text-align: center;
+        font-size: 18px;
+        color: #666;
+        font-weight: 400;
+        letter-spacing: 1px;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+        background: #f7f7f7;
+        color: #222;
+      }
+      button {
+        font-family: inherit;
+      }
+      input,
+      .output-textarea {
+        font-family: "Roboto Mono", "BIZ UDGothic", "SF Mono", "Menlo", "Monaco",
+          "Consolas", monospace, "Noto Sans Japanese", sans-serif;
+      }
+      input[type="text"],
+      input[type="number"] {
+        appearance: none;
+        font-size: 16px;
+        line-height: 20px;
+        padding: 10px 12px;
+        border: 1px solid #bbb;
+        border-radius: 6px;
+        background: #fafbfc;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      button {
+        font-size: 16px;
+      }
+      input[type="text"]:focus,
+      input[type="number"]:focus {
+        border-color: #333;
+      }
+
+      input[type="range"] {
+        appearance: none;
+        width: 200px;
+        height: 3px;
+        border-width: 0;
+        background-color: #ccc;
+        cursor: pointer;
+        display: block;
+        transition: background-color 0.2s;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        border: 3px solid #999;
+        outline: 3px solid #fff;
+        border-radius: 9999px;
+        background-color: #fff;
+        position: relative;
+        transition: background-color 0.2s;
+      }
+      input[type="range"]:hover {
+        background-color: #999;
+      }
+
+      input[type="range"]::-webkit-slider-thumb:hover {
+        border-color: #666;
+      }
+      .playground {
+        max-width: 700px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 10px;
+        box-sizing: border-box;
+        padding: 32px 24px 24px 24px;
+        box-shadow: none;
+        border: 1px solid #e0e0e0;
+        display: flex;
+        flex-direction: column;
+      }
+      .playground-input {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-bottom: 18px;
+      }
+      #playground-regexp-input {
+        flex: 1;
+        padding: 10px 12px;
+        min-width: 0;
+      }
+      #playground-generate-button {
+        width: 105px;
+        background-color: #222;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 13px 0;
+        line-height: 1;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      #playground-generate-button:hover {
+        background-color: #444;
+      }
+      #playground-generate-button:active {
+        background-color: #666;
+      }
+      .playground-output-tabs {
+        display: flex;
+        align-items: center;
+        border-bottom: 2px solid #e0e0e0;
+        margin-bottom: 0;
+      }
+      .playground-output-tab-button {
+        padding: 8px 0;
+        cursor: pointer;
+        line-height: 18px;
+        background: none;
+        border: none;
+        border-bottom: 2px solid transparent;
+        color: #888;
+        transition: color 0.2s, border-bottom-color 0.3s;
+        width: 80px;
+      }
+      .playground-output-tab-button:hover {
+        color: #666;
+        border-bottom-color: #ddd;
+      }
+      .playground-output-tab-button.active {
+        color: #111;
+        border-bottom-color: #111;
+        font-weight: bold;
+      }
+      #playground-options-button {
+        appearance: none;
+        background: none;
+        position: relative;
+        margin-left: auto;
+        background-color: none;
+        border: none;
+        color: #666;
+        font-size: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 8px 14px;
+        padding-right: 34px;
+        border-radius: 6px 6px 0 0;
+        transition: background-color 0.2s;
+      }
+      #playground-options-button:hover {
+        background-color: #f0f0f0;
+      }
+      #playground-options-button:active {
+        background-color: #e0e0e0;
+      }
+      #playground-options-button:before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 13px;
+        right: 15px;
+        width: 7px;
+        height: 7px;
+        border-right: 1px solid #666;
+        border-bottom: 1px solid #666;
+        transform: rotate(45deg);
+      }
+      .playground-options {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 38px;
+        z-index: 1;
+        background: #fff;
+        border: 1.5px solid #e0e0e0;
+        border-top: none;
+        border-radius: 0 0 10px 10px;
+        padding: 15px;
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 15px;
+        font-family: "Open Sans", sans-serif;
+        visibility: hidden;
+      }
+      .playground-options.active {
+        visibility: visible;
+      }
+      .playground-options hr {
+        grid-column: 1 / span 3;
+        border: none;
+        border-bottom: 1px solid #ddd;
+      }
+      .playground-options-row {
+        display: contents;
+      }
+      .playground-options-option-label {
+        color: #555;
+        font-size: 16px;
+      }
+      #playground-options-rangeclass-input {
+        grid-column: 2 / span 2;
+      }
+      .playground-options .playground-options-option-input {
+        padding: 6px 10px;
+        font-size: 15px;
+        line-height: 1.5;
+      }
+      .playground-options-option-slider {
+        flex: 1;
+        margin-left: 8px;
+        margin-right: 8px;
+      }
+      .playground-output {
+        position: relative;
+        padding-bottom: 7px;
+      }
+      .playground-output-content {
+        position: relative;
+        margin-top: 0;
+        background: #f8f8f8;
+        border-radius: 0 0 10px 10px;
+        border: 1.5px solid #e0e0e0;
+        border-top: none;
+        padding: 0;
+      }
+      #playground-output-content-textarea {
+        width: 100%;
+        height: 300px;
+        border: none;
+        background: transparent;
+        font-size: 18px;
+        color: #222;
+        resize: none;
+        outline: none;
+        padding: 18px;
+        box-sizing: border-box;
+        line-height: 1.5;
+        overflow: auto;
+        white-space: pre;
+      }
+      #playground-output-content-textarea.error {
+        color: #d00;
+      }
+      #playground-permalink {
+        display: flex;
+        flex-direction: column;
+      }
+      #playground-permalink h3 {
+        padding: 4px 2px;
+        font-size: 14px;
+        font-weight: inherit;
+        line-height: inherit;
+        color: #888;
+      }
+      #playground-permalink-input {
+        padding: 6px 10px;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      @media (max-width: 600px) {
+        #playground-output-content-textarea {
+          font-size: 14px;
+        }
+        .playground-output-tab-button.optional {
+          display: none;
+        }
+        .playground-options-option-label {
+          font-size: 12px;
+        }
+        .playground-options-row .playground-options-option-slider {
+          display: none;
+        }
+        .playground-options-option-input {
+          grid-column: 2 / span 2;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-main">
+      <h1 class="container-main-title">regexp-dummy-generator</h1>
+      <h2 class="container-main-subtitle">
+        Effortless String Generation from Patterns.
+      </h2>
+      <div class="playground">
+        <div class="playground-input">
+          <input
+            type="text"
+            id="playground-regexp-input"
+            placeholder="ex: /(\p{AHex}{2,6}\.)+/u, /[A-Za-z0-9]{50}/u, ..."
+            spellcheck="false"
+          />
+          <button id="playground-generate-button" type="button">
+            Generate
+          </button>
+        </div>
+        <div class="playground-output">
+          <div class="playground-output-tabs">
+            <button class="playground-output-tab-button active" type="button">
+              Plain
+            </button>
+            <button class="playground-output-tab-button" type="button">
+              JSON
+            </button>
+            <button class="playground-output-tab-button optional" type="button">
+              ESM
+            </button>
+            <button class="playground-output-tab-button optional" type="button">
+              CJS
+            </button>
+            <button class="playground-output-tab-button optional" type="button">
+              UMD
+            </button>
+            <button id="playground-options-button" type="button">
+              Options
+            </button>
+          </div>
+          <div class="playground-options" id="playground-options">
+            <div class="playground-options-row">
+              <label
+                class="playground-options-option-label"
+                for="playground-options-generate-count-input"
+                >generateCount</label
+              >
+              <input
+                class="playground-options-option-input"
+                id="playground-options-generate-count-input"
+                type="number"
+                min="1"
+                max="100"
+                value="10"
+              />
+              <input
+                class="playground-options-option-slider"
+                id="playground-options-generate-count-slider"
+                type="range"
+                min="1"
+                max="50"
+                value="10"
+              />
+            </div>
+            <hr />
+            <div class="playground-options-row">
+              <label
+                class="playground-options-option-label"
+                for="playground-options-maxrepeat-input"
+                >defaultMaxRepeat</label
+              >
+              <input
+                class="playground-options-option-input"
+                id="playground-options-maxrepeat-input"
+                type="number"
+                min="0"
+                max="999"
+                value="10"
+              />
+              <input
+                class="playground-options-option-slider"
+                id="playground-options-maxrepeat-slider"
+                type="range"
+                min="0"
+                max="15"
+                value="10"
+              />
+            </div>
+            <div class="playground-options-row">
+              <label
+                class="playground-options-option-label"
+                for="playground-options-rangeclass-input"
+                >allLettersRangeClass</label
+              >
+              <input
+                class="playground-options-option-input"
+                id="playground-options-rangeclass-input"
+                type="text"
+                value=""
+                placeholder="'A-Za-z0-9', '\p{sc=Hira}', etc..."
+              />
+            </div>
+          </div>
+          <div class="playground-output-content">
+            <textarea
+              id="playground-output-content-textarea"
+              spellcheck="false"
+            ></textarea>
+          </div>
+        </div>
+        <div id="playground-permalink">
+          <h3>Permalink</h3>
+          <input
+            type="text"
+            id="playground-permalink-input"
+            value=""
+            readonly
+          />
+        </div>
+      </div>
+    </div>
+    <script src="../dist/regexp_dummy_generator.min.umd.js"></script>
+    <script>
+      // --- Playground State ---
+      let fnGenerator = null;
+      let arrStrResults = [];
+      let strRenderType = "plain";
+      let objOptions = {
+        defaultMaxRepeat: 10,
+        allLettersRangeClass: "",
+      };
+      let errInitializeGenerator = null;
+      let nGenerateCount = 10;
+
+      const objKeysToSearchParams = {
+        defaultMaxRepeat: "m",
+        allLettersRangeClass: "a",
+      };
+      const objSearchParamsToKeys = Object.fromEntries(
+        Object.entries(objKeysToSearchParams).map(([key, value]) => [
+          value,
+          key,
+        ])
+      );
+
+      const elRegexpInput = document.querySelector("#playground-regexp-input");
+      const elGenerateButton = document.querySelector(
+        "#playground-generate-button"
+      );
+      const arrElTabButtons = Array.from(
+        document.querySelectorAll(
+          ".playground-output-tabs > .playground-output-tab-button"
+        )
+      );
+      const elOptionsButton = document.querySelector(
+        "#playground-options-button"
+      );
+      const elOptions = document.querySelector("#playground-options");
+      const elOptionsGenerateCountInput = document.querySelector(
+        "#playground-options-generate-count-input"
+      );
+      const elOptionsGenerateCountSlider = document.querySelector(
+        "#playground-options-generate-count-slider"
+      );
+      const elOptionsMaxRepeatInput = document.querySelector(
+        "#playground-options-maxrepeat-input"
+      );
+      const elOptionsMaxRepeatSlider = document.querySelector(
+        "#playground-options-maxrepeat-slider"
+      );
+      const elOptionsRangeClassInput = document.querySelector(
+        "#playground-options-rangeclass-input"
+      );
+      const elOutputContentTextarea = document.querySelector(
+        "#playground-output-content-textarea"
+      );
+      const elPermalinkInput = document.querySelector(
+        "#playground-permalink-input"
+      );
+
+      // --- Utility ---
+      function fnGetModifiedOptions() {
+        const objModified = {};
+        if (objOptions.defaultMaxRepeat !== 10) {
+          objModified.defaultMaxRepeat = objOptions.defaultMaxRepeat;
+        }
+        if (objOptions.allLettersRangeClass !== "") {
+          objModified.allLettersRangeClass = objOptions.allLettersRangeClass;
+        }
+        return objModified;
+      }
+
+      function fnParseRegexp(strInput) {
+        const arrMatch = strInput.match(/^\s*\/(.*)\/(\w*)\s*$/);
+        if (!arrMatch)
+          throw new Error('Invalid regexp format. Expected: "/pattern/flags"');
+        return new RegExp(arrMatch[1], arrMatch[2]);
+      }
+
+      function fnCreateGenerator() {
+        const rePattern = fnParseRegexp(elRegexpInput.value);
+        if (!rePattern) return null;
+        return RegExpDummyGenerator.newDummyGenerator(rePattern, {
+          defaultMaxRepeat: objOptions.defaultMaxRepeat,
+          allLettersRangeClass: objOptions.allLettersRangeClass,
+        });
+      }
+
+      function fnGenerateResults() {
+        try {
+          fnGenerator = fnCreateGenerator();
+        } catch (err) {
+          errInitializeGenerator = err;
+          return;
+        }
+        arrResults = Array.from({ length: nGenerateCount }, () =>
+          fnGenerator()
+        );
+        errInitializeGenerator = null;
+      }
+
+      function fnRender() {
+        let strPat = elRegexpInput.value;
+        if (errInitializeGenerator) {
+          elOutputContentTextarea.classList.add("error");
+          elOutputContentTextarea.value = errInitializeGenerator.message;
+          return;
+        }
+        elOutputContentTextarea.classList.remove("error");
+        if (strRenderType === "plain") {
+          elOutputContentTextarea.value = arrResults.join("\n");
+        } else if (strRenderType === "json") {
+          elOutputContentTextarea.value = JSON.stringify(arrResults, null, 2);
+        } else {
+          let arrMatch = strPat.match(/^\s*\/(.*)\/(\w*)\s*$/);
+          let strPattern = arrMatch ? arrMatch[1] : "";
+          let strFlags = arrMatch ? arrMatch[2] : "";
+          let arrOptStr = Object.entries(fnGetModifiedOptions()).map(
+            ([key, value]) => `  ${key}: ${JSON.stringify(value)}`
+          );
+          const strMainCode =
+            `const generator = newDummyGenerator(/${strPattern}/${strFlags}` +
+            (arrOptStr.length > 0
+              ? `, {\n` + arrOptStr.join(",\n") + "\n}"
+              : "") +
+            ");\n" +
+            "console.log(generator());\n";
+          if (strRenderType === "esm") {
+            elOutputContentTextarea.value = `import { newDummyGenerator } from "regexp-dummy-generator";\n\n${strMainCode}`;
+          } else if (strRenderType === "cjs") {
+            elOutputContentTextarea.value = `const { newDummyGenerator } = require("regexp-dummy-generator");\n\n${strMainCode}`;
+          } else if (strRenderType === "umd") {
+            elOutputContentTextarea.value = `<script src="https://cdn.jsdelivr.net/npm/regexp-dummy-generator/dist/regexp_dummy_generator.min.umd.js"><${"/script"}>\n<script>\n${strMainCode.replace(
+              /newDummyGenerator/,
+              "RegExpDummyGenerator.newDummyGenerator"
+            )}<${"/script"}>\n`;
+          }
+        }
+        const spOptions = new URLSearchParams([
+          ...(strPat.length ? [["r", strPat]] : []),
+          ...[...Object.entries(fnGetModifiedOptions())].map(([k, v]) => [
+            objKeysToSearchParams[k],
+            String(v),
+          ]),
+        ]);
+        elPermalinkInput.value =
+          location.origin +
+          location.pathname +
+          (spOptions.size > 0 ? "#" + String(spOptions) : "");
+      }
+
+      function fnUpdateAll() {
+        fnGenerateResults();
+        fnRender();
+      }
+
+      // --- Event Handlers ---
+      elRegexpInput.addEventListener("input", (e) => {
+        fnUpdateAll();
+      });
+      elRegexpInput.addEventListener("keydown", (e) => {
+        if (e.isComposing) return;
+        if (e.key === "Enter") {
+          e.preventDefault();
+          fnUpdateAll();
+        }
+      });
+      elGenerateButton.addEventListener("click", () => {
+        fnUpdateAll();
+      });
+      arrElTabButtons.forEach((elTargetTabBtn) => {
+        elTargetTabBtn.addEventListener("click", () => {
+          arrElTabButtons.forEach((elTabBtn) =>
+            elTabBtn.classList[elTabBtn === elTargetTabBtn ? "add" : "remove"](
+              "active"
+            )
+          );
+          strRenderType = elTargetTabBtn.textContent.trim().toLowerCase();
+          fnUpdateAll();
+        });
+      });
+      elOptionsButton.addEventListener("click", () => {
+        elOptions.classList.toggle("active");
+      });
+      document.addEventListener("mousedown", (e) => {
+        if (
+          !elOptions.contains(e.target) &&
+          !elOptionsButton.contains(e.target)
+        ) {
+          elOptions.classList.remove("active");
+        }
+      });
+      elPermalinkInput.addEventListener("mousedown", (e) => {
+        if (document.activeElement !== elPermalinkInput) {
+          e.preventDefault();
+          elPermalinkInput.focus();
+          elPermalinkInput.select();
+        }
+      });
+      const fnAttachSliderInput = (
+        elInput,
+        elSlider,
+        nMin,
+        nSliderMax,
+        fnCallback
+      ) => {
+        [elInput, elSlider].forEach((elTarget) => {
+          elTarget.addEventListener("input", (e) => {
+            let nVal = parseInt(e.currentTarget.value, 10);
+            if (isNaN(nVal) || nVal < nMin) nVal = nMin;
+            fnCallback(nVal);
+            elInput.value = nVal;
+            elSlider.value = Math.min(nVal, nSliderMax);
+            fnUpdateAll();
+          });
+        });
+      };
+      fnAttachSliderInput(
+        elOptionsGenerateCountInput,
+        elOptionsGenerateCountSlider,
+        1,
+        50,
+        (nVal) => {
+          nGenerateCount = nVal;
+        }
+      );
+      fnAttachSliderInput(
+        elOptionsMaxRepeatInput,
+        elOptionsMaxRepeatSlider,
+        0,
+        15,
+        (nVal) => {
+          objOptions.defaultMaxRepeat = nVal;
+        }
+      );
+      elOptionsRangeClassInput.addEventListener("input", (e) => {
+        objOptions.allLettersRangeClass = elOptionsRangeClassInput.value;
+        fnUpdateAll();
+      });
+
+      // --- Init ---
+      elRegexpInput.value = "/[A-Za-z0-9]{50}/u";
+      try {
+        new URLSearchParams(location.hash.replace(/^#/, "")).forEach(
+          (strValue, strKey) => {
+            const strMapKey = objSearchParamsToKeys[strKey];
+            if (strKey === "r") {
+              elRegexpInput.value = strValue;
+            } else if (strMapKey) {
+              objOptions[strMapKey] =
+                typeof objOptions[strMapKey] === "number"
+                  ? parseInt(strValue, 10)
+                  : String(strValue);
+            }
+          }
+        );
+      } catch (e) {}
+      elOptionsMaxRepeatInput.value = objOptions.defaultMaxRepeat;
+      elOptionsMaxRepeatSlider.value = Math.min(
+        objOptions.defaultMaxRepeat,
+        15
+      );
+      elOptionsRangeClassInput.value = objOptions.allLettersRangeClass;
+      elOptionsGenerateCountInput.value = nGenerateCount;
+      elOptionsGenerateCountSlider.value = Math.min(nGenerateCount, 50);
+      fnUpdateAll();
+    </script>
+  </body>
+</html>
